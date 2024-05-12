@@ -1,6 +1,4 @@
 package librarymanagement.entity;
-
-
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
@@ -46,7 +44,7 @@ public class User {
 	private AccountDetails accountdetails;
 	
 	@OneToOne(mappedBy = "user.user_id")
-	private Notification notification;
+	private Notification notifications;
 	
 	@ManyToMany(cascade = CascadeType.ALL)
 	private List<CirculationTransaction> circulationtransactions;

@@ -1,5 +1,4 @@
 package librarymanagement.entity;
-
 import java.sql.Date;
 import java.util.List;
 
@@ -23,7 +22,6 @@ import lombok.Setter;
 @Entity
 @Table(name = "circulation_transaction")
 public class CirculationTransaction {
-	
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

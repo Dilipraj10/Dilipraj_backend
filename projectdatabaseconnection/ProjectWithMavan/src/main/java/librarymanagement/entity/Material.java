@@ -1,8 +1,4 @@
 package librarymanagement.entity;
-
-
-
-
 import java.util.List;
 
 import jakarta.persistence.CascadeType;

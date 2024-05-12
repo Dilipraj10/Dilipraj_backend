@@ -1,5 +1,4 @@
 package librarymanagement.entity;
-
 import java.sql.Date;
 import java.util.List;
 
@@ -29,10 +28,8 @@ public class HoldRequest {
 	@Column(name = "hold_id")
 	private int holdId;
 	
-	
 	@ManyToMany(cascade = CascadeType.ALL)
 	private List<User> users;
-	
 	
 	@ManyToMany(cascade = CascadeType.ALL)
 	private List<Material> materials;

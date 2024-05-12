@@ -1,5 +1,4 @@
 package librarymanagement.entity;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -26,8 +25,6 @@ public class AccountDetails {
 	
 	@OneToOne
 	private User user;
-	
-	
 	
 	@Column(name = "phone_no")
 	private long phoneNo;
