@@ -10,6 +10,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -41,7 +42,16 @@ public class User {
 	@Column(name = "password_hash")
 	private String password;
 	
+	@OneToOne(mappedBy = "user.user_id")
+	private AccountDetails accountdetails;
+	
+	@OneToOne(mappedBy = "user.user_id")
+	private Notification notification;
+	
 	@ManyToMany(cascade = CascadeType.ALL)
-	private List<CirculationTransaction> circulationtransaction;
+	private List<CirculationTransaction> circulationtransactions;
+	
+	@ManyToMany(cascade = CascadeType.ALL)
+	private List<HoldRequest> holdRequests;
 	
 }

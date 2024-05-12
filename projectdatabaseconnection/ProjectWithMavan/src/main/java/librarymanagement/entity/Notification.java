@@ -6,6 +6,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
 
 public class Notification {
 
@@ -13,9 +14,9 @@ public class Notification {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "notification_id")
 	private int notificationId;
-	@Column(name = "user_id")
 	
-	private int userId;
+	@OneToOne
+	private User user;
 	
 	@Column(name = "notification_type")
 	private String notificationType;

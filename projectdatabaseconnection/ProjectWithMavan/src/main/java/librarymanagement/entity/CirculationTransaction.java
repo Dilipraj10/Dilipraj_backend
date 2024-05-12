@@ -33,7 +33,6 @@ public class CirculationTransaction {
 	@ManyToMany(cascade = CascadeType.ALL)
 	private List<User> users;
 	
-	
 	@ManyToMany(cascade = CascadeType.ALL)
 	private List<Material> materials;
 	

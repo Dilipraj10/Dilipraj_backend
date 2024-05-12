@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,8 +24,10 @@ public class AccountDetails {
 	@Column(name = "account_id")
 	private int accountId;
 	
-	@Column(name = "user_id")
-	private int userId;
+	@OneToOne
+	private User user;
+	
+	
 	
 	@Column(name = "phone_no")
 	private long phoneNo;

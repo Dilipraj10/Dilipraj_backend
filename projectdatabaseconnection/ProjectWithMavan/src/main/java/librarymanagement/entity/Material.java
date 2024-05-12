@@ -51,5 +51,8 @@ public class Material {
 	private int availableCopies;
 	
 	@ManyToMany(cascade = CascadeType.ALL)
-	private List<CirculationTransaction> circulationsTransactio;
+	private List<CirculationTransaction> circulationsTransactions;
+	
+	@ManyToMany(cascade = CascadeType.ALL)
+	private List<HoldRequest> holdRequests;
 }

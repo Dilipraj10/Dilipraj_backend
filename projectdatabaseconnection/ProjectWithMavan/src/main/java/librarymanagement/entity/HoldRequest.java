@@ -1,12 +1,15 @@
 package librarymanagement.entity;
 
 import java.sql.Date;
+import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,7 +22,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(name = "hold_requests")
-public class HoldRequests {
+public class HoldRequest {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,8 +30,12 @@ public class HoldRequests {
 	private int holdId;
 	
 	
-	private int userId;
-	private int materialId;
+	@ManyToMany(cascade = CascadeType.ALL)
+	private List<User> users;
+	
+	
+	@ManyToMany(cascade = CascadeType.ALL)
+	private List<Material> materials;
 	
 	@Column(name = "request_date")
 	private Date requestDate;
