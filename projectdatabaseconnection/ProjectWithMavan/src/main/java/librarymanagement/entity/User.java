@@ -8,6 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -15,10 +16,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+
+
 @Getter
 @Setter
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor 
 @Entity
 @Table(name = "user")
 public class User {
@@ -36,15 +39,15 @@ public class User {
 	
 	@Column(name = "email")
 	private String email;
-	
+
 	@Column(name = "password_hash")
 	private String password;
 	
-	@OneToOne(mappedBy = "user.user_id")
+	@OneToOne(mappedBy = "user")
 	private AccountDetails accountdetails;
 	
-	@OneToOne(mappedBy = "user.user_id")
-	private Notification notifications;
+	@OneToMany(mappedBy = "user")
+	private List<Notification> notifications;
 	
 	@ManyToMany(cascade = CascadeType.ALL)
 	private List<CirculationTransaction> circulationtransactions;

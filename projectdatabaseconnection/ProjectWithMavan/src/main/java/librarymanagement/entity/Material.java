@@ -1,9 +1,12 @@
 package librarymanagement.entity;
 import java.util.List;
+import librarymanagement.*;
+
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -16,7 +19,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor
+@AllArgsConstructor 
 @NoArgsConstructor
 @Entity
 @Table(name = "material")
@@ -47,7 +50,7 @@ public class Material {
 	private int availableCopies;
 	
 	@ManyToMany(cascade = CascadeType.ALL)
-	private List<CirculationTransaction> circulationsTransactions;
+	private List<CirculationTransaction> circulationtransactions;
 	
 	@ManyToMany(cascade = CascadeType.ALL)
 	private List<HoldRequest> holdRequests;

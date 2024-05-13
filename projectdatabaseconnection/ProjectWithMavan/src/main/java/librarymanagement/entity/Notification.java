@@ -2,11 +2,21 @@ package librarymanagement.entity;
 import java.sql.Date;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.ManyToOne;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter 
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
 public class Notification {
 
 	@Id
@@ -14,7 +24,7 @@ public class Notification {
 	@Column(name = "notification_id")
 	private int notificationId;
 	
-	@OneToOne
+	@ManyToOne
 	private User user;
 	
 	@Column(name = "notification_type")
