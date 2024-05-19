@@ -17,7 +17,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -27,10 +26,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Setter@Getter@AllArgsConstructor@NoArgsConstructor
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @Entity
 @Table(name = "employee_primary_info")
-@Builder
 public class EmployeePrimaryInfo {
 	
 	@Id
@@ -89,11 +91,6 @@ public class EmployeePrimaryInfo {
 	
 	@ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY,mappedBy = "employees")
 	private List<EmployeeTechnicalSkill> skill;
-	
-	
-	
-	
-	
 
 	
 	

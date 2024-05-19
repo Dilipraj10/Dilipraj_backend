@@ -21,7 +21,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-
+@Table(name = "employee_technical_skill")
 public class EmployeeTechnicalSkill {
 	
 	@Id
