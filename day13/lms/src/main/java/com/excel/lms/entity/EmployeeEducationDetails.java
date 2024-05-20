@@ -54,13 +54,7 @@ public class EmployeeEducationDetails {
 	private EmployeePrimaryInfo employee;
 	
 	
-	@Override
-	public String toString() {
-		return "EmployeeEducationDetails [educationType=" + educationType + ", yearOfPassing=" + yearOfPassing
-				+ ", percentage=" + percentage + ", universityName=" + universityName + ", instituteName="
-				+ instituteName + ", specialization=" + specialization + ", state=" + state + "]";
-	}
-	 
+	
 	
 	
 

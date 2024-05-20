@@ -51,17 +51,4 @@ public class EmployeeSecondaryInfo {
 
 	
 	
-	
-	
-	
-	
-	
-	@Override
-	public String toString() {
-		return "EmployeeSecondaryInfo [panNo=" + panNo + ", aadharNo=" + aadharNo + ", fatherName=" + fatherName
-				+ ", motherName=" + motherName + ", spouseName=" + spouseName + ", passportNo=" + passportNo
-				+ ", maritalStatus=" + maritalStatus + "]";
-	}
-	
-	
 }

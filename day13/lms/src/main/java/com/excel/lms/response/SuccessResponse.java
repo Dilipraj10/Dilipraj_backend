@@ -7,5 +7,6 @@ public class SuccessResponse<T> {
 
 	private T data;
 	private String message;
+	
 
 }
