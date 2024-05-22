@@ -74,13 +74,7 @@ public class BaseController {
 		EmployeeDto dto1  = employeeService.updateEmployee(dto);
 		return ResponseEntity.status(HttpStatus.OK).body(dto1);
 	}
-	
-	
-	
-	
-	
-	
-	
+
 	
 
 }
