@@ -7,29 +7,29 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.excel.library.dto.AdminLoginDto;
-import com.excel.library.dto.BookDto;
-import com.excel.library.dto.BookHistoryDto;
-import com.excel.library.dto.UserDto;
-import com.excel.library.entity.User;
-import com.excel.library.repository.UserRepo;
-import com.excel.library.response.SuccessResponse;
-import com.excel.library.service.LibraryService;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.excel.library.dto.AdminDto;
+import com.excel.library.dto.BookDto;
+import com.excel.library.dto.BookHistoryDto;
+import com.excel.library.dto.FeedbackDto;
+import com.excel.library.dto.UserDto;
+import com.excel.library.entity.Admin;
+import com.excel.library.response.SuccessResponse;
+import com.excel.library.service.LibraryService;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
 
-
-
 @RestController
+@CrossOrigin
 @RequestMapping(path="api/v1/library")
 public class Controller {
 	
@@ -41,7 +41,7 @@ public class Controller {
 		String userId = libraryService.saveUser(dto);
 		return ResponseEntity.status(HttpStatus.CREATED).
 				body(SuccessResponse.
-				<String>builder().data(userId).message("User added").build());
+				<String>builder().data(userId).message("User Registerd").build());
 	}
 	
 	
@@ -155,6 +155,44 @@ public class Controller {
 									.build());
 	}
 	
+	@PostMapping(path = "/postfeedback")
+	ResponseEntity<SuccessResponse<String>> postFeedback(@RequestBody FeedbackDto dto) {
+		String feedback = libraryService.postFeedback(dto);
+		return ResponseEntity.status(HttpStatus.ACCEPTED)
+				.body(SuccessResponse.<String>builder()
+						.data(feedback).message("feedback added")
+						.build());
+	}
+	
+	@GetMapping(path = "/getfeedback")
+	public ResponseEntity<SuccessResponse<List<FeedbackDto>>> getAllFeedback() {
+		List<FeedbackDto> allFeedback = libraryService.getAllFeedback();
+		return ResponseEntity.status(HttpStatus.ACCEPTED)
+				.body(SuccessResponse.<List<FeedbackDto>>builder()
+						.data(allFeedback).isError(false)
+						.message("All tarnsaction are fetched")
+						.build());
+	}	
+	
+	@PostMapping(path ="/postadmin")
+	ResponseEntity<SuccessResponse<String>> postAdmin(@RequestBody Admin dto) {
+		String admin = libraryService.postAdmin(dto);
+		return ResponseEntity.status(HttpStatus.ACCEPTED)
+				.body(SuccessResponse.<String>builder()
+						.data(admin)
+						.message("admin added")
+						.build());
+	}
+	
+	@PostMapping("/adminlogin")
+	ResponseEntity<SuccessResponse<String>> adminLogin(@RequestBody AdminDto dto) {
+		String admin = libraryService.adminLogin(dto);
+	return ResponseEntity.status(HttpStatus.ACCEPTED)
+			.body(SuccessResponse.<String>builder()
+					.data(admin)
+					.message("Admin Login Success")
+					.build());
+}
 	
 	
 }

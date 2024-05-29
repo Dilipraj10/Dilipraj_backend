@@ -1,10 +1,6 @@
 package com.excel.library.dto;
 
-import java.time.LocalDate;
-
 import com.excel.library.enums.Gender;
-import com.excel.library.enums.Type;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,8 +18,8 @@ public class UserDto {
 	private String username;
 	private String phoneNo;
 	private String email;
-	private Gender gender;
 	private String address;
-	private Type type;
-
+	private String password;
+	private String confirmPassword;
+	private Gender gender;
 }

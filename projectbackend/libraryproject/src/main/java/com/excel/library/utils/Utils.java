@@ -2,21 +2,27 @@ package com.excel.library.utils;
 
 import java.time.LocalDate;
 
-import com.excel.library.dto.AdminLoginDto;
 import com.excel.library.dto.BookDto;
 import com.excel.library.dto.BookHistoryDto;
+import com.excel.library.dto.FeedbackDto;
 import com.excel.library.dto.UserDto;
+import com.excel.library.entity.Admin;
 import com.excel.library.entity.Book;
 import com.excel.library.entity.BookHistory;
+import com.excel.library.entity.Feedback;
 import com.excel.library.entity.User;
 
 public class Utils {
+
+
 
 	public static User userDtoToEntity(UserDto dto) {
 		return User.builder()
 				.userId(dto.getUserId()).username(dto.getUsername())
 				.phoneNo(dto.getPhoneNo()).email(dto.getEmail())
-				.gender(dto.getGender()).address(dto.getAddress()).type(dto.getType())
+				.gender(dto.getGender()).address(dto.getAddress())
+				.password(dto.getPassword())
+				.confirmPassword(dto.getConfirmPassword())
 				.build();
 	}
 
@@ -41,7 +47,23 @@ public class Utils {
 				.build();
 	}
 
+	public static Feedback feedbackDtoToEntiy(FeedbackDto dto) {
+		return Feedback.builder()
+				.name(dto.getName())
+				.email(dto.getEmail())
+				.message(dto.getMessage())
+				.build();
+	}
+
+	public static Admin adminDtoToEntity(Admin dto) {
+		return Admin.builder()
+				.adminId(dto.getAdminId())
+				.password(dto.getPassword())
+				.build();
+	}
+
 	
+
 
 	
 	

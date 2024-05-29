@@ -8,6 +8,7 @@ import com.excel.library.enums.Gender;
 import com.excel.library.enums.Type;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -35,21 +36,30 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	
+	@GeneratedValue(strategy = GenerationType.IDENTITY	)
 	private String userId;
 
+	@Column(nullable = false)
 	private String username;
 
+	@Column(nullable = false)
 	private String phoneNo;
-
+	
+	@Column(nullable = false)
 	private String email;
 
+	@Column(nullable = false)
+	private String address;
+	
+	@Column(nullable = false)
+	private String password;
+	
+	@Column(nullable = false)
+	private String confirmPassword;
+	
+	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
 	private Gender gender;
-
-	private String address;
-
-	@Enumerated(EnumType.STRING)
-	private Type type;
 
 	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "user")
 	private List<BookHistory> histories;

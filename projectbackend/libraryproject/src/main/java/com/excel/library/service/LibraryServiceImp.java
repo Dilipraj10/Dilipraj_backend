@@ -9,17 +9,21 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.excel.library.dto.AdminLoginDto;
+import com.excel.library.dto.AdminDto;
 import com.excel.library.dto.BookDto;
 import com.excel.library.dto.BookHistoryDto;
+import com.excel.library.dto.FeedbackDto;
 import com.excel.library.dto.UserDto;
+import com.excel.library.entity.Admin;
 import com.excel.library.entity.Book;
 import com.excel.library.entity.BookHistory;
+import com.excel.library.entity.Feedback;
 import com.excel.library.entity.User;
-import com.excel.library.enums.Genres;
 import com.excel.library.exception.UserNotFoundException;
+import com.excel.library.repository.AdminRepo;
 import com.excel.library.repository.BookHistoryRepo;
 import com.excel.library.repository.BookRepo;
+import com.excel.library.repository.FeedbackRepo;
 import com.excel.library.repository.UserRepo;
 import com.excel.library.utils.Utils;
 
@@ -34,6 +38,12 @@ public class LibraryServiceImp implements LibraryService{
 	
 	@Autowired
 	private BookHistoryRepo bookHistoryRepo;
+	
+	@Autowired
+	private FeedbackRepo feedbackRepository;
+	
+	@Autowired
+	private AdminRepo adminRepository;
 	
 	
 	@Override
@@ -108,7 +118,6 @@ public class LibraryServiceImp implements LibraryService{
 						.phoneNo(e.getPhoneNo())
 						.gender(e.getGender())
 						.address(e.getAddress())
-						.type(e.getType())
 							.build()).toList();
 		} catch (Exception e) {
 			throw new UserNotFoundException("No users to show");
@@ -127,7 +136,6 @@ public class LibraryServiceImp implements LibraryService{
 					.phoneNo(userEntity.getPhoneNo())
 					.gender(userEntity.getGender())
 					.address(userEntity.getAddress())
-					.type(userEntity.getType())
 					.build();
 		}
 		throw new UserNotFoundException("No user to show");
@@ -240,7 +248,6 @@ public class LibraryServiceImp implements LibraryService{
 			userEntity.setEmail(dto.getEmail());
 			userEntity.setGender(dto.getGender());
 			userEntity.setPhoneNo(dto.getPhoneNo());
-			userEntity.setType(dto.getType());
 			return userRepo.save(userEntity).getUserId();
 		}
 		throw new UserNotFoundException("No user to update");
@@ -264,8 +271,39 @@ public class LibraryServiceImp implements LibraryService{
 		throw new UserNotFoundException("No book to update");
 	}
 
-	
+	@Override
+	public String postFeedback(FeedbackDto dto) {
+		Feedback feedback = Utils.feedbackDtoToEntiy(dto);
+		return feedbackRepository.save(feedback).getName();
+	}
+
+	@Override
+	public List<FeedbackDto> getAllFeedback() {
+			return feedbackRepository.findAll().stream().map(f -> FeedbackDto.builder()
+					.name(f.getName())
+					.email(f.getEmail())
+					.message(f.getMessage())
+					.build()).collect(Collectors.toList());
+	}
+
+	public String postAdmin(Admin dto) {
+		Admin admin = Utils.adminDtoToEntity(dto);
+		return adminRepository.save(admin).getAdminId();
+	}
+
+	public String adminLogin(AdminDto dto) {
+	       Optional<Admin> optional = adminRepository.findByAdminId(dto.getAdminId());
+	       if (optional.isPresent()) {
+	           Admin admin = optional.get();
+	           if (admin.getPassword().equals(dto.getPassword()) && 
+	        		   admin.getAdminId().equals(dto.getAdminId())) {
+	               return admin.getAdminId();
+	           } else {
+	               throw new UserNotFoundException("Invalid Password!");
+	           }
+	       }
+	       throw new UserNotFoundException("Invalid Username!");
+	   }
 	
 }
-
 

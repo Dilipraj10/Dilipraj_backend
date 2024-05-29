@@ -2,11 +2,12 @@ package com.excel.library.service;
 
 import java.util.List;
 
-import com.excel.library.dto.AdminLoginDto;
+import com.excel.library.dto.AdminDto;
 import com.excel.library.dto.BookDto;
 import com.excel.library.dto.BookHistoryDto;
+import com.excel.library.dto.FeedbackDto;
 import com.excel.library.dto.UserDto;
-import com.excel.library.entity.User;
+import com.excel.library.entity.Admin;
 
 public interface LibraryService {
 
@@ -35,5 +36,14 @@ public interface LibraryService {
 	public String upadateUserById(UserDto dto);
 
 	public String upadateBookById(BookDto dto);
+
+	public String postFeedback(FeedbackDto dto);
+
+	public List<FeedbackDto> getAllFeedback();
+
+	public String postAdmin(Admin dto);
+
+	public String adminLogin(AdminDto dto);
+
 
 }
