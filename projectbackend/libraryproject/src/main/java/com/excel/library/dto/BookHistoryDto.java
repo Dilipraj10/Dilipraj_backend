@@ -15,9 +15,11 @@ import lombok.Setter;
 @Builder
 public class BookHistoryDto {
 	
-	private int historyId; 
+	private Integer historyId; 
 	
-	private String userId;
+	private int userId;
+	
+//	private String email;
 	
 	private String bookId;
 

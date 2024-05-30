@@ -1,4 +1,4 @@
-package com.excel.library.entity;
+	package com.excel.library.entity;
 
 import java.time.LocalDate;
 
@@ -39,12 +39,11 @@ public class BookHistory {
 	
 	private boolean isRenewed;
 	
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "user_id")
-	@ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
 	private User user;
 	
 	@JoinColumn(name = "book_id")
-	
 	@ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	private Book book;
 	

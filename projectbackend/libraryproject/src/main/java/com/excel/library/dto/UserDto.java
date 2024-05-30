@@ -14,7 +14,7 @@ import lombok.Setter;
 @Builder
 public class UserDto {
 	
-    private String userId;
+	private Integer userId;
 	private String username;
 	private String phoneNo;
 	private String email;

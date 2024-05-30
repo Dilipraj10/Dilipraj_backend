@@ -21,7 +21,7 @@ public class Feedback {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer feedbakId;
+	private Integer feedbackId;
 
 	@Column(nullable = false)
 	private String name;

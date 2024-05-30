@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.excel.library.entity.Book;
 import com.excel.library.entity.BookHistory;
 
 public interface BookHistoryRepo extends JpaRepository<BookHistory, Integer> {

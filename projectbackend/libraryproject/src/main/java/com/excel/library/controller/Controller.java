@@ -1,7 +1,5 @@
 package com.excel.library.controller;
 
-
-
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,10 +20,10 @@ import com.excel.library.dto.BookHistoryDto;
 import com.excel.library.dto.FeedbackDto;
 import com.excel.library.dto.UserDto;
 import com.excel.library.entity.Admin;
+import com.excel.library.enums.Genres;
 import com.excel.library.response.SuccessResponse;
 import com.excel.library.service.LibraryService;
 import org.springframework.web.bind.annotation.RequestParam;
-
 
 
 @RestController
@@ -36,14 +34,33 @@ public class Controller {
 	@Autowired
 	private LibraryService libraryService;
 	
+//-------------------------------------------------------------------------------------------	
 	@PostMapping(path = "/auser")
 	public ResponseEntity<SuccessResponse<String>> postSaveUser(@RequestBody UserDto dto) {
-		String userId = libraryService.saveUser(dto);
+		String user = libraryService.saveUser(dto);
+		if(user == "User already present")
+		{
+			return ResponseEntity.status(HttpStatus.CREATED).
+					body(SuccessResponse.<String>builder()
+							.data(user)
+							.message("User already present")
+							.build());
+		}
+		else if(user == "password mismatch!") {
+			return ResponseEntity.status(HttpStatus.CREATED).
+					body(SuccessResponse.<String>builder()
+							.data(user)
+							.message("password mismatch!")
+							.build());
+		}
 		return ResponseEntity.status(HttpStatus.CREATED).
-				body(SuccessResponse.
-				<String>builder().data(userId).message("User Registerd").build());
+				body(SuccessResponse.<String>builder()
+						.data(user)
+						.message("Registerd Sucessfully")
+						.build());
 	}
 	
+//-------------------------------------------------------------------------------------------
 	
 	@PostMapping(path = "/abook")
 	public ResponseEntity<SuccessResponse<String>> postSaveBook(@RequestBody BookDto dto) {
@@ -53,6 +70,7 @@ public class Controller {
 				<String>builder().data(userId).message("Book added").build()); 
 	}
 	
+//-------------------------------------------------------------------------------------------	
 	@PostMapping(path = "/atransaction")
 	public ResponseEntity<SuccessResponse<String>> saveTransactionHistories(@RequestBody BookHistoryDto dto) {
 		String userId = libraryService.saveTransactionHistories(dto);
@@ -61,9 +79,13 @@ public class Controller {
 				<String>builder().data(userId).message("transaction added").build());
 	}
 	
+//-------------------------------------------------------------------------------------------	
 	@GetMapping(path = "/alluser")
-	public ResponseEntity<SuccessResponse<List<UserDto>>> getAllUser() {
-		List<UserDto> allUsers = libraryService.getAllUser();
+	public ResponseEntity<SuccessResponse<List<UserDto>>> getAllUser(
+			@RequestParam(name = "userId",required = false) Integer userId,
+			@RequestParam(name = "name",required = false) String name,
+			@RequestParam(name = "email",required = false) String email) {
+		List<UserDto> allUsers = libraryService.getAllUser(userId, name, email);
 		return ResponseEntity.status(HttpStatus.ACCEPTED).
 				body(SuccessResponse.
 				<List<UserDto>>builder().
@@ -71,20 +93,15 @@ public class Controller {
 				.build());
 	}
 	
-	@GetMapping(path = "/userbyid")
-	public ResponseEntity<SuccessResponse<UserDto>> getUserById(@RequestBody UserDto dto) {
-		UserDto user = libraryService.getUserById(dto);
-		return ResponseEntity.status(HttpStatus.ACCEPTED).
-				body(SuccessResponse.<UserDto>builder()
-						.data(user).isError(false)
-						.message("User bt Id fetched")
-						.build());
-	}
-	
-	
+//-------------------------------------------------------------------------------------------	
 	@GetMapping(path = "/allbook")
-	public ResponseEntity<SuccessResponse<List<BookDto>>> getAllBooks() {
-		List<BookDto> allBooks = libraryService.getAllBooks();
+	public ResponseEntity<SuccessResponse<List<BookDto>>> getAllBooks(
+			@RequestParam(name = "bookId",required = false) String bookId,
+			@RequestParam(name = "bookName",required = false) String bookName,
+			@RequestParam(name = "author",required = false) String author,
+			@RequestParam(name = "genre",required = false) Genres genre) {
+		List<BookDto> allBooks = libraryService.getAllBooks(
+				bookId, bookName, author, genre);
 		return ResponseEntity.status(HttpStatus.ACCEPTED)
 				.body(SuccessResponse.<List<BookDto>>builder()
 						.data(allBooks).isError(false)
@@ -92,51 +109,32 @@ public class Controller {
 						.build());
 	}
 	
-	
-	@GetMapping(path = "/bookbyid")
-	public ResponseEntity<SuccessResponse<BookDto>> getBookById(@RequestBody BookDto dto) {
-			BookDto bookEntity = libraryService.getBookById(dto);
-		return ResponseEntity.status(HttpStatus.ACCEPTED)
-				.body(SuccessResponse.<BookDto>builder()
-						.data(bookEntity).isError(false)
-						.message("Book by id fetched")
-						.build());
-	}
-	
+//-------------------------------------------------------------------------------------------	
 	@GetMapping(path ="/alltransaction")
-	public ResponseEntity<SuccessResponse<List<BookHistoryDto>>> getAllTransaction() {
-		List<BookHistoryDto> allTransaction = libraryService.getAllTransaction();
+	public ResponseEntity<SuccessResponse<List<BookHistoryDto>>> getAllTransaction(
+			@RequestParam(name = "historyId",required = false) Integer historyId) {
+		List<BookHistoryDto> allTransaction = libraryService.getAllHistory(historyId);
 		return ResponseEntity.status(HttpStatus.ACCEPTED)
 				.body(SuccessResponse.<List<BookHistoryDto>>builder()
 						.data(allTransaction).isError(false)
 						.message("All tarnsaction are fetched")
 						.build());
 	}	
-	
-	@GetMapping(path = "/transactionbyid")
-	public ResponseEntity<SuccessResponse<BookHistoryDto>> getTransactionById(@RequestBody BookHistoryDto dto) {
-			BookHistoryDto transactionByID = libraryService.getTransactionById(dto);
-		return ResponseEntity.status(HttpStatus.ACCEPTED)
-				.body(SuccessResponse.<BookHistoryDto>builder()
-						.data(transactionByID).isError(false)
-						.message("transaction by id")
-						.build());
-						
-	}
-	
+
+//-------------------------------------------------------------------------------------------	
 	@DeleteMapping(path = "/deleteuserbyid")
 	public ResponseEntity<String> deletUserByID(@RequestBody UserDto dto) {
 		libraryService.deletUserByID(dto);
 		return ResponseEntity.status(HttpStatus.OK).body("User deleted");
 	}
-	
+//-------------------------------------------------------------------------------------------	
 	
 	@DeleteMapping(path = "/deletebookbyid")
 	public ResponseEntity<String> deletBookByID(@RequestBody BookDto dto) {
 		libraryService.deletBookByID(dto);
 		return ResponseEntity.status(HttpStatus.OK).body("Book deleted");
 	}
-	
+//-------------------------------------------------------------------------------------------	
 	@PutMapping(path = "/updateuserbyid")
 	ResponseEntity<SuccessResponse<String>> upadateUserById(@RequestBody UserDto dto){
 		String updatedUser = libraryService.upadateUserById(dto);
@@ -145,16 +143,16 @@ public class Controller {
 									.data(updatedUser).message("User Updated")
 									.build());
 	}
-	
+//-------------------------------------------------------------------------------------------	
 	@PutMapping(path = "/updatebookbyid")
 	ResponseEntity<SuccessResponse<String>> upadateBookById(@RequestBody BookDto dto){
 		String updatedBook = libraryService.upadateBookById(dto);
 		return ResponseEntity.status(HttpStatus.ACCEPTED)
 							.body(SuccessResponse.<String>builder()
-									.data(updatedBook).message("User Updated")
+									.data(updatedBook).message("Book Updated")
 									.build());
 	}
-	
+//-------------------------------------------------------------------------------------------	
 	@PostMapping(path = "/postfeedback")
 	ResponseEntity<SuccessResponse<String>> postFeedback(@RequestBody FeedbackDto dto) {
 		String feedback = libraryService.postFeedback(dto);
@@ -164,18 +162,9 @@ public class Controller {
 						.build());
 	}
 	
-	@GetMapping(path = "/getfeedback")
-	public ResponseEntity<SuccessResponse<List<FeedbackDto>>> getAllFeedback() {
-		List<FeedbackDto> allFeedback = libraryService.getAllFeedback();
-		return ResponseEntity.status(HttpStatus.ACCEPTED)
-				.body(SuccessResponse.<List<FeedbackDto>>builder()
-						.data(allFeedback).isError(false)
-						.message("All tarnsaction are fetched")
-						.build());
-	}	
-	
+//-------------------------------------------------------------------------------------------	
 	@PostMapping(path ="/postadmin")
-	ResponseEntity<SuccessResponse<String>> postAdmin(@RequestBody Admin dto) {
+	public ResponseEntity<SuccessResponse<String>> postAdmin(@RequestBody Admin dto) {
 		String admin = libraryService.postAdmin(dto);
 		return ResponseEntity.status(HttpStatus.ACCEPTED)
 				.body(SuccessResponse.<String>builder()
@@ -183,16 +172,61 @@ public class Controller {
 						.message("admin added")
 						.build());
 	}
-	
+//-------------------------------------------------------------------------------------------	
 	@PostMapping("/adminlogin")
 	ResponseEntity<SuccessResponse<String>> adminLogin(@RequestBody AdminDto dto) {
 		String admin = libraryService.adminLogin(dto);
 	return ResponseEntity.status(HttpStatus.ACCEPTED)
 			.body(SuccessResponse.<String>builder()
 					.data(admin)
-					.message("Admin Login Success")
+					.message("Admin Logined Successfully!")
 					.build());
-}
+	}
 	
-	
+//-------------------------------------------------------------------------------------------------	
+
+	@PostMapping(path = "/userlogin")
+	public ResponseEntity<SuccessResponse<String>> userLogin(@RequestBody UserDto dto) {
+		String user = libraryService.userLogin(dto);
+		return ResponseEntity.status(HttpStatus.ACCEPTED)
+				.body(SuccessResponse.<String>builder()
+						.data(user)
+						.isError(false)
+						.message("User Login Successfully!")
+						.build());
+	}
+//-------------------------------------------------------------------------------------------	
+
+   @PostMapping(path = "/forgotpassword")
+   public ResponseEntity<SuccessResponse<String>> forgotPassword(@RequestBody UserDto dto) {
+    String  update = libraryService.forgotPassword(dto);  
+    return ResponseEntity.status(HttpStatus.ACCEPTED )
+    		.body(SuccessResponse.<String>builder()
+    				.data(update)
+    				.isError(false)
+    				.message("Password Updated")
+    				.build());
+   		}
+
+//------------------------------------------------------------------------------------   
+
+   
+   
+   @GetMapping("getallFeedback")
+   public ResponseEntity<SuccessResponse<List<FeedbackDto>>> getallFeedback() {
+	   List<FeedbackDto> feedback = libraryService.getAllFeedback();
+		return ResponseEntity.status(HttpStatus.ACCEPTED)
+				.body(SuccessResponse.<List<FeedbackDto>>builder()
+						.data(feedback)
+						.isError(false)
+						.message("All Feedback fetched!")
+						.build());
+
+   }
+   
+//-----------------------------------------------------------------------------------------------------------------------------   
+   
 }
+
+
+

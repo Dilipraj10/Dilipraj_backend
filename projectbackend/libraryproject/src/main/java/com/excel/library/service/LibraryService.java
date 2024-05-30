@@ -8,6 +8,7 @@ import com.excel.library.dto.BookHistoryDto;
 import com.excel.library.dto.FeedbackDto;
 import com.excel.library.dto.UserDto;
 import com.excel.library.entity.Admin;
+import com.excel.library.enums.Genres;
 
 public interface LibraryService {
 
@@ -17,15 +18,11 @@ public interface LibraryService {
 
 	public String saveTransactionHistories(BookHistoryDto dto);
 
-	public List<UserDto> getAllUser();
+	public List<UserDto> getAllUser(Integer userId, String name, String email);
 
-	public UserDto getUserById(UserDto dto);
-
-	public List<BookDto> getAllBooks();
+	public List<BookDto> getAllBooks(String bookId, String bookName, String author, Genres genre);
 
 	public BookDto getBookById(BookDto dto);
-
-	public List<BookHistoryDto> getAllTransaction();
 
 	public BookHistoryDto getTransactionById(BookHistoryDto dto);
 
@@ -39,11 +36,18 @@ public interface LibraryService {
 
 	public String postFeedback(FeedbackDto dto);
 
-	public List<FeedbackDto> getAllFeedback();
-
 	public String postAdmin(Admin dto);
 
 	public String adminLogin(AdminDto dto);
+
+	public String userLogin(UserDto dto);
+
+	public String forgotPassword(UserDto dto);
+
+	public List<BookHistoryDto> getAllHistory(Integer historyId);
+
+	public List<FeedbackDto> getAllFeedback();
+
 
 
 }

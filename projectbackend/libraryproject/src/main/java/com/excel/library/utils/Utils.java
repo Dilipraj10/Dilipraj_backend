@@ -1,7 +1,5 @@
 package com.excel.library.utils;
 
-import java.time.LocalDate;
-
 import com.excel.library.dto.BookDto;
 import com.excel.library.dto.BookHistoryDto;
 import com.excel.library.dto.FeedbackDto;
@@ -18,7 +16,7 @@ public class Utils {
 
 	public static User userDtoToEntity(UserDto dto) {
 		return User.builder()
-				.userId(dto.getUserId()).username(dto.getUsername())
+				.username(dto.getUsername())
 				.phoneNo(dto.getPhoneNo()).email(dto.getEmail())
 				.gender(dto.getGender()).address(dto.getAddress())
 				.password(dto.getPassword())
@@ -29,6 +27,7 @@ public class Utils {
 	public static Book bookDtoToEntity(BookDto dto) {
 		return Book.builder()
 				.bookId(dto.getBookId()).bookName(dto.getBookName())
+				.bookUrl(dto.getBookUrl())
 				.bookAuthor(dto.getBookAuthor()).genres(dto.getGenres())
 				.description(dto.getDescription())
 				.addedDate(dto.getAddedDate())
@@ -61,10 +60,5 @@ public class Utils {
 				.password(dto.getPassword())
 				.build();
 	}
-
-	
-
-
-	
-	
+		
 }

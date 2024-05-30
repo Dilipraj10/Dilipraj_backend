@@ -1,4 +1,4 @@
-package com.excel.library.dto;
+package com.excel.library.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,19 +6,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Setter
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class FeedbackDto {
-	
-	private Integer feedbackId;
-	
-	private String name;
-	
-	private String email;
+public class ErrorResponse {
+
+	private boolean isError;
 	
 	private String message;
-
 }

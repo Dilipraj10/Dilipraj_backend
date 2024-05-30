@@ -19,6 +19,7 @@ import com.excel.library.entity.Book;
 import com.excel.library.entity.BookHistory;
 import com.excel.library.entity.Feedback;
 import com.excel.library.entity.User;
+import com.excel.library.enums.Genres;
 import com.excel.library.exception.UserNotFoundException;
 import com.excel.library.repository.AdminRepo;
 import com.excel.library.repository.BookHistoryRepo;
@@ -31,10 +32,10 @@ import com.excel.library.utils.Utils;
 public class LibraryServiceImp implements LibraryService{
 
 	@Autowired
-	private UserRepo userRepo;
+	private UserRepo userRepository;
 	
 	@Autowired
-	private BookRepo bookRepo;
+	private BookRepo bookRepository;
 	
 	@Autowired
 	private BookHistoryRepo bookHistoryRepo;
@@ -43,36 +44,42 @@ public class LibraryServiceImp implements LibraryService{
 	private FeedbackRepo feedbackRepository;
 	
 	@Autowired
-	private AdminRepo adminRepository;
+	private AdminRepo adminRepository;	
 	
-	
+//------------------------------------------------------------------------------------------	
 	@Override
 	public String saveUser(UserDto dto) {
-		if(!userRepo.findByUserId(dto.getUserId()).isPresent())
+		if(!userRepository.findByEmail(dto.getEmail()).isPresent())
 		{
-			User user =  Utils.userDtoToEntity(dto);
-			return userRepo.save(user).getUserId();
-			
+			if(dto.getPassword().equals(dto.getConfirmPassword())) {
+				User user =  Utils.userDtoToEntity(dto);
+				return userRepository.save(user).getUsername();
+			}
+			else {
+				return "password mismatch!";
+			}
 		}
-		throw new UserNotFoundException("User already present");
+		return "User already present";
 	}
 
+//------------------------------------------------------------------------------------------	
 	@Override
 	public String saveBook(BookDto dto) {	
-		if(!bookRepo.findByBookId(dto.getBookId()).isPresent())
+		if(!bookRepository.findByBookId(dto.getBookId()).isPresent())
 		{
 			Book user =  Utils.bookDtoToEntity(dto);
-			return bookRepo.save(user).getBookId();
+			return bookRepository.save(user).getBookId();
 			
 		}
 		throw new UserNotFoundException("Book already present");
 	}
 
+//-------------------------------------------------------------------------------------------	
 	@Override
 	public String saveTransactionHistories(BookHistoryDto dto) {
 		
-		Optional<User> userOptional = userRepo.findByUserId(dto.getUserId());
-		Optional<Book> bookOptional = bookRepo.findByBookId(dto.getBookId());
+		Optional<User> userOptional = userRepository.findByUserId(dto.getUserId());
+		Optional<Book> bookOptional = bookRepository.findByBookId(dto.getBookId());
 		
 		if(userOptional.isPresent() && bookOptional.isPresent())
 		{
@@ -102,50 +109,55 @@ public class LibraryServiceImp implements LibraryService{
 			bookHistoryEntity.setUser(userEntity);
 			bookHistoryEntity.setBook(bookEntity);
 			
-			return userRepo.save(userEntity).getUserId();
+			return userRepository.save(userEntity).getUsername();
  		}	
 		throw new UserNotFoundException("User and Book Not found");
 	}
 
+//---------------------------------------------------------------------------------------------------	
 	@Override
-	public List<UserDto> getAllUser() {
-		try {
-			return userRepo.findAll().stream()
-					.map(e -> UserDto.builder()
-						.userId(e.getUserId())
-						.username(e.getUsername())
-						.email(e.getEmail())
-						.phoneNo(e.getPhoneNo())
-						.gender(e.getGender())
-						.address(e.getAddress())
-							.build()).toList();
-		} catch (Exception e) {
-			throw new UserNotFoundException("No users to show");
-		}	 
+	public List<UserDto> getAllUser(Integer userId, String name, String email) {
+	    try {
+	        List<UserDto> users = userRepository.findAll().stream()
+	                .map(e -> UserDto.builder()
+	                        .userId(e.getUserId())
+	                        .username(e.getUsername())
+	                        .email(e.getEmail())
+	                        .phoneNo(e.getPhoneNo())
+	                        .gender(e.getGender())
+	                        .address(e.getAddress())
+	                        .build())
+	                        .toList();
+	        
+	        if (userId != null) {
+	            return users.stream()
+	                    .filter(u -> u.getUserId().equals(userId))
+	                    .collect(Collectors.toList());
+	        } else if (name != null) {
+	            return users.stream()
+	                    .filter(u -> u.getUsername().equalsIgnoreCase(name))
+	                    .collect(Collectors.toList());
+	        } else if (email != null) {
+	            return users.stream()
+	                    .filter(u -> u.getEmail().equalsIgnoreCase(email))
+	                    .collect(Collectors.toList());
+	        }
+	        return users;
+	        
+	    } catch (Exception e) {
+	        throw new UserNotFoundException("No users to show");
+	    }	 
 	}
+	
 
+//-------------------------------------------------------------------------------------------	
 	@Override
-	public UserDto getUserById(UserDto dto) {
-		Optional<User> optional = userRepo.findByUserId(dto.getUserId());
-		if(optional.isPresent()) {
-			User userEntity = optional.get();
-			return UserDto.builder()
-					.userId(userEntity.getUserId())
-					.username(userEntity.getUsername())
-					.email(userEntity.getEmail())
-					.phoneNo(userEntity.getPhoneNo())
-					.gender(userEntity.getGender())
-					.address(userEntity.getAddress())
-					.build();
-		}
-		throw new UserNotFoundException("No user to show");
-	}
-
-	@Override
-	public List<BookDto> getAllBooks() {
+	public List<BookDto> getAllBooks(
+			String bookId, String bookName, String author, Genres genre) {
 		try {
-			return bookRepo.findAll().stream().map(b -> BookDto.builder()
+			List<BookDto> books = bookRepository.findAll().stream().map(b -> BookDto.builder()
 					.bookId(b.getBookId())
+					.bookUrl(b.getBookUrl())
 					.bookName(b.getBookName())
 					.bookAuthor(b.getBookAuthor())
 					.genres(b.getGenres())
@@ -154,19 +166,32 @@ public class LibraryServiceImp implements LibraryService{
 					.totalCopies(b.getTotalCopies())
 					.availableCopies(b.getAvailableCopies())
 					.build()).toList();
+			 if (bookId != null) {
+			        return books.stream().filter(b -> b.getBookId().equalsIgnoreCase(bookId)).collect(Collectors.toList());
+			    } else if (bookName != null) {
+			        return books.stream().filter(b -> b.getBookName().equalsIgnoreCase(bookName)).collect(Collectors.toList());
+			    } else if (author != null) {
+			        return books.stream().filter(b -> b.getBookAuthor().equalsIgnoreCase(author)).collect(Collectors.toList());
+			    } else if (genre != null) {
+			        return books.stream().filter(b -> b.getGenres().equals(genre)).collect(Collectors.toList());
+			    }
+
+			    return books;
 		} catch (Exception e) {
 			throw new UserNotFoundException("No books to Show");
 		}			 
 	}
 
+//-------------------------------------------------------------------------------------------	
 	@Override
 	public BookDto getBookById(BookDto dto) {
-		Optional<Book> optional = bookRepo.findByBookId(dto.getBookId());
+		Optional<Book> optional = bookRepository.findByBookId(dto.getBookId());
 		if(optional.isPresent())
 		{
 			Book book = optional.get();
 			return BookDto.builder()
 					.bookId(book.getBookId())
+					.bookUrl(book.getBookUrl())
 					.bookName(book.getBookName())
 					.bookAuthor(book.getBookAuthor())
 					.genres(book.getGenres())
@@ -179,22 +204,32 @@ public class LibraryServiceImp implements LibraryService{
 		throw new UserNotFoundException("No books to show") ;
 	}
 
+//-------------------------------------------------------------------------------------------	
+
 	@Override
-	public List<BookHistoryDto> getAllTransaction() {
-		try {
-			return bookHistoryRepo.findAll().stream()
-					.map(t -> BookHistoryDto.builder()
-							.historyId(t.getHistoryId())
-							.bookId(t.getBook().getBookId())
-							.userId(t.getUser().getUserId())
-							.issuedDate(t.getIssuedDate())
-							.dueDate(t.getDueDate())
-							.returnDate(t.getReturnDate())
-							.build()).collect(Collectors.toList());
-		} catch (Exception e) {
-			throw new UserNotFoundException("No transaction to Show");
-		}
+	public List<BookHistoryDto> getAllHistory(Integer historyId) {
+	    try {
+	        List<BookHistoryDto> history = bookHistoryRepo.findAll().stream()
+	                .map(t -> BookHistoryDto.builder()
+	                        .historyId(t.getHistoryId())
+	                        .bookId(t.getBook().getBookId())
+	                        .issuedDate(t.getIssuedDate())
+	                        .dueDate(t.getDueDate())
+	                        .returnDate(t.getReturnDate())
+	                        .build())
+	                        .toList();
+	        if (historyId != null) {
+	            return history.stream()
+	                    .filter(u -> u.getHistoryId().equals(historyId))
+	                    .collect(Collectors.toList());
+	        }
+	        return history;
+	    } catch (Exception e) {
+	        throw new UserNotFoundException("No History to Show");
+	    }
 	}
+
+//-------------------------------------------------------------------------------------------	
 
 	@Override
 	public BookHistoryDto getTransactionById(BookHistoryDto dto) {
@@ -203,7 +238,6 @@ public class LibraryServiceImp implements LibraryService{
 			BookHistory bookHistory = optional.get();
 			return BookHistoryDto.builder()
 					.historyId(bookHistory.getHistoryId())
-					.userId(bookHistory.getUser().getUserId())
 					.issuedDate(bookHistory.getIssuedDate())
 					.returnDate(bookHistory.getReturnDate())
 					.dueDate(bookHistory.getDueDate())
@@ -215,32 +249,38 @@ public class LibraryServiceImp implements LibraryService{
 		throw new UserNotFoundException("No transaction to Show");
 	}
 
+//-------------------------------------------------------------------------------------------	
+	
 	@Override
 	public void deletUserByID(UserDto dto) {
-			Optional<User> optional = userRepo.findByUserId(dto.getUserId());
+			Optional<User> optional = userRepository.findByUserId(dto.getUserId());
 			if(optional.isPresent()) {
-				userRepo.delete(optional.get());
+				userRepository.delete(optional.get());
 			}
 			else {
 			throw new UserNotFoundException("No user to delete");
 		}
 	}
 
+//-------------------------------------------------------------------------------------------	
+
 	@Override
 	public void deletBookByID(BookDto dto) {
 		
-			Optional<Book> optional = bookRepo.findByBookId(dto.getBookId());
+			Optional<Book> optional = bookRepository.findByBookId(dto.getBookId());
 			if(optional.isPresent()) {
-				bookRepo.delete(optional.get());
+				bookRepository.delete(optional.get());
 			}
 			else {
 			throw new UserNotFoundException("No books to delete");
 		}
 	}
 
+//-------------------------------------------------------------------------------------------	
+	
 	@Override
 	public String upadateUserById(UserDto dto) {
-		Optional<User> optional = userRepo.findByUserId(dto.getUserId());
+		Optional<User> optional = userRepository.findByUserId(dto.getUserId	());
 		if(optional.isPresent()) {
 			User userEntity = optional.get();
 			userEntity.setUsername(dto.getUsername());
@@ -248,16 +288,19 @@ public class LibraryServiceImp implements LibraryService{
 			userEntity.setEmail(dto.getEmail());
 			userEntity.setGender(dto.getGender());
 			userEntity.setPhoneNo(dto.getPhoneNo());
-			return userRepo.save(userEntity).getUserId();
+			return userRepository.save(userEntity).getUsername();
 		}
 		throw new UserNotFoundException("No user to update");
 	}
 
+//-------------------------------------------------------------------------------------------	
+	
 	@Override
 	public String upadateBookById(BookDto dto) {
-		Optional<Book> optional = bookRepo.findByBookId(dto.getBookId());
+		Optional<Book> optional = bookRepository.findByBookId(dto.getBookId());
 		if(optional.isPresent()) {
 			Book bookEntity = optional.get();
+			bookEntity.setBookUrl(dto.getBookUrl());
 			bookEntity.setBookName(dto.getBookName());
 			bookEntity.setAddedDate(dto.getAddedDate());
 			bookEntity.setAvailableCopies(dto.getAvailableCopies());
@@ -266,30 +309,27 @@ public class LibraryServiceImp implements LibraryService{
 			bookEntity.setGenres(dto.getGenres());
 			bookEntity.setTotalCopies(dto.getTotalCopies());
 			
-			return bookRepo.save(bookEntity).getBookId();	
+			return bookRepository.save(bookEntity).getBookId();	
 		}
 		throw new UserNotFoundException("No book to update");
 	}
 
+//-------------------------------------------------------------------------------------------	
+	
 	@Override
 	public String postFeedback(FeedbackDto dto) {
 		Feedback feedback = Utils.feedbackDtoToEntiy(dto);
 		return feedbackRepository.save(feedback).getName();
 	}
 
-	@Override
-	public List<FeedbackDto> getAllFeedback() {
-			return feedbackRepository.findAll().stream().map(f -> FeedbackDto.builder()
-					.name(f.getName())
-					.email(f.getEmail())
-					.message(f.getMessage())
-					.build()).collect(Collectors.toList());
-	}
-
+//------------------------------------------------------------------------------------------------	
+	
 	public String postAdmin(Admin dto) {
 		Admin admin = Utils.adminDtoToEntity(dto);
 		return adminRepository.save(admin).getAdminId();
 	}
+	
+//--------------------------------------------------------------------------------------------------
 
 	public String adminLogin(AdminDto dto) {
 	       Optional<Admin> optional = adminRepository.findByAdminId(dto.getAdminId());
@@ -304,6 +344,51 @@ public class LibraryServiceImp implements LibraryService{
 	       }
 	       throw new UserNotFoundException("Invalid Username!");
 	   }
+
+//------------------------------------------------------------------------------------	
+	@Override
+	public String userLogin(UserDto dto) {
+		Optional<User> optional = userRepository.findByEmail(dto.getEmail());
+		if(optional.isPresent()) {
+			User user = optional.get();
+			if(user.getEmail().equals(dto.getEmail())
+					&& user.getPassword().equals(dto.getPassword())) {
+				return user.getUsername();
+			}
+			else {
+	              throw new UserNotFoundException("Invalid Password!");
+			}	
+		}
+        throw new UserNotFoundException("Invalid Email!");
+	}
+
+//------------------------------------------------------------------------------------	
+	@Override
+	public String forgotPassword(UserDto dto) {
+		Optional<User> optional = userRepository.findByEmail(dto.getEmail());
+				if(optional.isPresent()) {
+					User user = optional.get();
+					user.setPassword(dto.getPassword());
+					user.setConfirmPassword(dto.getConfirmPassword());
+					return userRepository.save(user).getUsername();
+				}
+	        throw new UserNotFoundException("Invalid Email!");
+	}
 	
+//------------------------------------------------------------------------------------	
+
+	@Override
+	public List<FeedbackDto> getAllFeedback() {
+		return feedbackRepository.findAll().stream()
+				.map(f -> FeedbackDto.builder()
+						.name(f.getName())
+						.email(f.getEmail())
+						.message(f.getMessage())
+						.build()).toList();
+	}
+	
+//------------------------------------------------------------------------------------------------------	
+
+
 }
 
