@@ -136,8 +136,8 @@ public class Controller {
 	}
 //-------------------------------------------------------------------------------------------	
 	@PutMapping(path = "/updateuserbyid")
-	ResponseEntity<SuccessResponse<String>> upadateUserById(@RequestBody UserDto dto){
-		String updatedUser = libraryService.upadateUserById(dto);
+	ResponseEntity<SuccessResponse<String>> upadateUserByEmail(@RequestBody UserDto dto){
+		String updatedUser = libraryService.upadateUserByEmail(dto);
 		return ResponseEntity.status(HttpStatus.ACCEPTED)
 							.body(SuccessResponse.<String>builder()
 									.data(updatedUser).message("User Updated")
@@ -186,10 +186,10 @@ public class Controller {
 //-------------------------------------------------------------------------------------------------	
 
 	@PostMapping(path = "/userlogin")
-	public ResponseEntity<SuccessResponse<String>> userLogin(@RequestBody UserDto dto) {
-		String user = libraryService.userLogin(dto);
+	public ResponseEntity<SuccessResponse<UserDto>> userLogin(@RequestBody UserDto dto) {
+		UserDto user = libraryService.userLogin(dto);
 		return ResponseEntity.status(HttpStatus.ACCEPTED)
-				.body(SuccessResponse.<String>builder()
+				.body(SuccessResponse.<UserDto>builder()
 						.data(user)
 						.isError(false)
 						.message("User Login Successfully!")

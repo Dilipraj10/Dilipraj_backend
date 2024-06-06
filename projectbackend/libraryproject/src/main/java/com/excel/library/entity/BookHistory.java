@@ -1,4 +1,4 @@
-	package com.excel.library.entity;
+package com.excel.library.entity;
 
 import java.time.LocalDate;
 
@@ -28,6 +28,8 @@ public class BookHistory {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer historyId;
+	
+	private String email;
 	
 	private LocalDate issuedDate;
 	

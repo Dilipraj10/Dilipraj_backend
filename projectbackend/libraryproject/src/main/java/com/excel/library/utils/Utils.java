@@ -39,6 +39,7 @@ public class Utils {
 	public static BookHistory transactionDtoToEntity(BookHistoryDto dto) {
 		return BookHistory.builder()
 				.issuedDate(dto.getIssuedDate())
+				.email(dto.getEmail())
 				.dueDate(dto.getDueDate())
 				.returnDate(dto.getReturnDate())
 				.isReturned(dto.isReturned())
@@ -60,5 +61,14 @@ public class Utils {
 				.password(dto.getPassword())
 				.build();
 	}
+
+	public static UserDto userLogin(String username, String email) {
+		return UserDto.builder()
+				.username(username)
+				.email(email)
+				.build();
+	}
+
+	
 		
 }

@@ -30,7 +30,7 @@ public interface LibraryService {
 
 	public void deletBookByID(BookDto dto);
 
-	public String upadateUserById(UserDto dto);
+	public String upadateUserByEmail(UserDto dto);
 
 	public String upadateBookById(BookDto dto);
 
@@ -40,7 +40,7 @@ public interface LibraryService {
 
 	public String adminLogin(AdminDto dto);
 
-	public String userLogin(UserDto dto);
+	public UserDto userLogin(UserDto dto);
 
 	public String forgotPassword(UserDto dto);
 

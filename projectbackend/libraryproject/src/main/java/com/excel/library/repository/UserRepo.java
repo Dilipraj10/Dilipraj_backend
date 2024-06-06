@@ -8,7 +8,7 @@ import com.excel.library.entity.User;
 
 public interface UserRepo extends JpaRepository<User, Integer> {
 	
-	Optional<User> findByEmail(String userId);
+	Optional<User> findByEmail(String email);
 	Optional<User> findByUserId(Integer userId);
 
 

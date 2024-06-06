@@ -78,7 +78,7 @@ public class LibraryServiceImp implements LibraryService{
 	@Override
 	public String saveTransactionHistories(BookHistoryDto dto) {
 		
-		Optional<User> userOptional = userRepository.findByUserId(dto.getUserId());
+		Optional<User> userOptional = userRepository.findByEmail(dto.getEmail());
 		Optional<Book> bookOptional = bookRepository.findByBookId(dto.getBookId());
 		
 		if(userOptional.isPresent() && bookOptional.isPresent())
@@ -89,8 +89,9 @@ public class LibraryServiceImp implements LibraryService{
 			
 			if(userEntity.getHistories() != null)
 			{
-				userEntity.getHistories().contains(bookHistoryEntity);
-				userEntity.getHistories().add(bookHistoryEntity);
+				if(userEntity.getHistories().contains(bookHistoryEntity)){
+					userEntity.getHistories().add(bookHistoryEntity);
+				}
 			}
 			else {
 				userEntity.setHistories(new ArrayList<>(Arrays.asList(bookHistoryEntity)));
@@ -211,7 +212,8 @@ public class LibraryServiceImp implements LibraryService{
 	    try {
 	        List<BookHistoryDto> history = bookHistoryRepo.findAll().stream()
 	                .map(t -> BookHistoryDto.builder()
-	                        .historyId(t.getHistoryId())
+	                        .historyId(t.getHistoryId())	
+	                        .email(t.getUser().getEmail())
 	                        .bookId(t.getBook().getBookId())
 	                        .issuedDate(t.getIssuedDate())
 	                        .dueDate(t.getDueDate())
@@ -279,8 +281,8 @@ public class LibraryServiceImp implements LibraryService{
 //-------------------------------------------------------------------------------------------	
 	
 	@Override
-	public String upadateUserById(UserDto dto) {
-		Optional<User> optional = userRepository.findByUserId(dto.getUserId	());
+	public String upadateUserByEmail(UserDto dto) {
+		Optional<User> optional = userRepository.findByEmail(dto.getEmail());
 		if(optional.isPresent()) {
 			User userEntity = optional.get();
 			userEntity.setUsername(dto.getUsername());
@@ -347,13 +349,13 @@ public class LibraryServiceImp implements LibraryService{
 
 //------------------------------------------------------------------------------------	
 	@Override
-	public String userLogin(UserDto dto) {
+	public UserDto userLogin(UserDto dto) {
 		Optional<User> optional = userRepository.findByEmail(dto.getEmail());
 		if(optional.isPresent()) {
 			User user = optional.get();
 			if(user.getEmail().equals(dto.getEmail())
 					&& user.getPassword().equals(dto.getPassword())) {
-				return user.getUsername();
+				return Utils.userLogin(user.getUsername(),user.getEmail());
 			}
 			else {
 	              throw new UserNotFoundException("Invalid Password!");
