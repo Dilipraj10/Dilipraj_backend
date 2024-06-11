@@ -136,7 +136,7 @@ public class Controller {
 	}
 //-------------------------------------------------------------------------------------------	
 	@PutMapping(path = "/updateuserbyid")
-	ResponseEntity<SuccessResponse<String>> upadateUserByEmail(@RequestBody UserDto dto){
+	public ResponseEntity<SuccessResponse<String>> upadateUserByEmail(@RequestBody UserDto dto){
 		String updatedUser = libraryService.upadateUserByEmail(dto);
 		return ResponseEntity.status(HttpStatus.ACCEPTED)
 							.body(SuccessResponse.<String>builder()
@@ -145,13 +145,26 @@ public class Controller {
 	}
 //-------------------------------------------------------------------------------------------	
 	@PutMapping(path = "/updatebookbyid")
-	ResponseEntity<SuccessResponse<String>> upadateBookById(@RequestBody BookDto dto){
+	public ResponseEntity<SuccessResponse<String>> upadateBookById(@RequestBody BookDto dto){
 		String updatedBook = libraryService.upadateBookById(dto);
 		return ResponseEntity.status(HttpStatus.ACCEPTED)
 							.body(SuccessResponse.<String>builder()
 									.data(updatedBook).message("Book Updated")
 									.build());
 	}
+	
+//------------------------------------------------------------------------------------	
+	
+	@PutMapping(path ="/updatetransaction")
+	public ResponseEntity<SuccessResponse<Integer>> upadateTransaction(@RequestBody BookHistoryDto dto){
+		Integer update = libraryService.updateTransaction(dto);
+		return ResponseEntity.status(HttpStatus.ACCEPTED)
+				.body(SuccessResponse.<Integer>builder()
+						.data(update)
+						.message("transaction updated")
+						.build());
+	}
+	
 //-------------------------------------------------------------------------------------------	
 	@PostMapping(path = "/postfeedback")
 	ResponseEntity<SuccessResponse<String>> postFeedback(@RequestBody FeedbackDto dto) {
@@ -164,7 +177,7 @@ public class Controller {
 	
 //-------------------------------------------------------------------------------------------	
 	@PostMapping(path ="/postadmin")
-	public ResponseEntity<SuccessResponse<String>> postAdmin(@RequestBody Admin dto) {
+	public ResponseEntity<SuccessResponse<String>> postAdmin(@RequestBody AdminDto dto) {
 		String admin = libraryService.postAdmin(dto);
 		return ResponseEntity.status(HttpStatus.ACCEPTED)
 				.body(SuccessResponse.<String>builder()

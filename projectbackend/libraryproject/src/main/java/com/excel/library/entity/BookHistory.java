@@ -29,8 +29,8 @@ public class BookHistory {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer historyId;
 	
-	private String email;
-	
+//	private String email;
+		
 	private LocalDate issuedDate;
 	
 	private LocalDate dueDate;
@@ -44,7 +44,7 @@ public class BookHistory {
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "user_id")
 	private User user;
-	
+
 	@JoinColumn(name = "book_id")
 	@ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	private Book book;

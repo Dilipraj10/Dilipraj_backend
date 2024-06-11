@@ -78,41 +78,48 @@ public class LibraryServiceImp implements LibraryService{
 	@Override
 	public String saveTransactionHistories(BookHistoryDto dto) {
 		
-		Optional<User> userOptional = userRepository.findByEmail(dto.getEmail());
-		Optional<Book> bookOptional = bookRepository.findByBookId(dto.getBookId());
-		
-		if(userOptional.isPresent() && bookOptional.isPresent())
-		{
-			User userEntity = userOptional.get();
-			Book bookEntity = bookOptional.get();
-			BookHistory bookHistoryEntity =  Utils.transactionDtoToEntity(dto);
+		Optional<BookHistory> optional = bookHistoryRepo.
+				findByBookBookIdAndUserEmail(dto.getBookId(),dto.getEmail());
+
+		if(!optional.isPresent()) {
 			
-			if(userEntity.getHistories() != null)
+			Optional<User> userOptional = userRepository.findByEmail(dto.getEmail());
+			Optional<Book> bookOptional = bookRepository.findByBookId(dto.getBookId());
+			
+			if(userOptional.isPresent() && bookOptional.isPresent())
 			{
-				if(userEntity.getHistories().contains(bookHistoryEntity)){
-					userEntity.getHistories().add(bookHistoryEntity);
+				User userEntity = userOptional.get();
+				Book bookEntity = bookOptional.get();
+				BookHistory bookHistoryEntity =  Utils.transactionDtoToEntity(dto);
+				
+				if(userEntity.getHistories() != null)
+				{
+					if(userEntity.getHistories().contains(bookHistoryEntity)){
+						userEntity.getHistories().add(bookHistoryEntity);
+					}
 				}
-			}
-			else {
-				userEntity.setHistories(new ArrayList<>(Arrays.asList(bookHistoryEntity)));
-			}
-			
-			if(bookEntity.getHistories() != null)
-			{
-				bookEntity.getHistories().contains(bookHistoryEntity);
-				bookEntity.getHistories().add(bookHistoryEntity);
-			}
-			
-			else {
-				bookEntity.setHistories(new ArrayList<>(Arrays.asList(bookHistoryEntity)));
-			}	
-			
-			bookHistoryEntity.setUser(userEntity);
-			bookHistoryEntity.setBook(bookEntity);
-			
-			return userRepository.save(userEntity).getUsername();
- 		}	
-		throw new UserNotFoundException("User and Book Not found");
+				else {
+					userEntity.setHistories(new ArrayList<>(Arrays.asList(bookHistoryEntity)));
+				}
+				
+				if(bookEntity.getHistories() != null)
+				{
+					bookEntity.getHistories().contains(bookHistoryEntity);
+					bookEntity.getHistories().add(bookHistoryEntity);
+				}
+				
+				else {
+					bookEntity.setHistories(new ArrayList<>(Arrays.asList(bookHistoryEntity)));
+				}	
+				
+				bookHistoryEntity.setUser(userEntity);
+				bookHistoryEntity.setBook(bookEntity);
+				
+				return userRepository.save(userEntity).getUsername();
+	 		}	
+		}
+		
+		throw new UserNotFoundException("User already taken a book");
 	}
 
 //---------------------------------------------------------------------------------------------------	
@@ -326,7 +333,7 @@ public class LibraryServiceImp implements LibraryService{
 
 //------------------------------------------------------------------------------------------------	
 	
-	public String postAdmin(Admin dto) {
+	public String postAdmin(AdminDto dto) {
 		Admin admin = Utils.adminDtoToEntity(dto);
 		return adminRepository.save(admin).getAdminId();
 	}
@@ -387,6 +394,27 @@ public class LibraryServiceImp implements LibraryService{
 						.email(f.getEmail())
 						.message(f.getMessage())
 						.build()).toList();
+	}
+
+//-------------------------------------------------------------------------------------------------	
+	@Override
+	public Integer updateTransaction(BookHistoryDto dto) {
+		Optional<BookHistory> option = bookHistoryRepo.
+				findByBookBookIdAndUserEmail(dto.getBookId(), dto.getEmail());	
+		if(option.isPresent()) {
+			BookHistory history = option.get();
+			history.setDueDate(dto.getDueDate());
+			history.setIssuedDate(dto.getIssuedDate());
+			history.setRenewed(dto.isReturned());
+			history.setReturnDate(dto.getReturnDate());
+			history.setReturned(dto.isRenewed());
+			
+			bookHistoryRepo.save(history);
+			return dto.getHistoryId();
+		}
+		else {
+	        throw new UserNotFoundException("User Or BookId Not Found!");
+		}
 	}
 	
 //------------------------------------------------------------------------------------------------------	

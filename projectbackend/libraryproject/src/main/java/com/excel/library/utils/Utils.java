@@ -1,5 +1,6 @@
 package com.excel.library.utils;
 
+import com.excel.library.dto.AdminDto;
 import com.excel.library.dto.BookDto;
 import com.excel.library.dto.BookHistoryDto;
 import com.excel.library.dto.FeedbackDto;
@@ -39,7 +40,7 @@ public class Utils {
 	public static BookHistory transactionDtoToEntity(BookHistoryDto dto) {
 		return BookHistory.builder()
 				.issuedDate(dto.getIssuedDate())
-				.email(dto.getEmail())
+//				.email(dto.getEmail())
 				.dueDate(dto.getDueDate())
 				.returnDate(dto.getReturnDate())
 				.isReturned(dto.isReturned())
@@ -55,7 +56,7 @@ public class Utils {
 				.build();
 	}
 
-	public static Admin adminDtoToEntity(Admin dto) {
+	public static Admin adminDtoToEntity(AdminDto dto) {
 		return Admin.builder()
 				.adminId(dto.getAdminId())
 				.password(dto.getPassword())

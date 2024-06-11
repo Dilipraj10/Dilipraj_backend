@@ -36,7 +36,7 @@ public interface LibraryService {
 
 	public String postFeedback(FeedbackDto dto);
 
-	public String postAdmin(Admin dto);
+	public String postAdmin(AdminDto dto);
 
 	public String adminLogin(AdminDto dto);
 
@@ -47,6 +47,8 @@ public interface LibraryService {
 	public List<BookHistoryDto> getAllHistory(Integer historyId);
 
 	public List<FeedbackDto> getAllFeedback();
+
+	public Integer updateTransaction(BookHistoryDto dto);
 
 
 

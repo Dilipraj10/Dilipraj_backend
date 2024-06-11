@@ -17,6 +17,8 @@ import lombok.Setter;
 @Builder
 
 public class BookDto {
+	
+
 	private String bookId; 
 	private String bookUrl;
 	private String bookName;

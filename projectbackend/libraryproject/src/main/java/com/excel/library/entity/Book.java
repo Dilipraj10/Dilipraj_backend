@@ -6,6 +6,7 @@ import java.util.List;
 import com.excel.library.enums.Genres;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -32,8 +33,9 @@ public class Book {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	
+	@Column(name = "book_id")
 	private String bookId;
-		
+	
 	private String bookUrl;
 
 	private String bookName;
