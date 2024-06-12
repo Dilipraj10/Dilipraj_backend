@@ -29,9 +29,8 @@ public class BookHistoryDto {
 	
 	private LocalDate returnDate;
 	
-	private boolean isReturned;
+	private Boolean isReturned;
 	
-	private boolean isRenewed;
-
+	private Boolean isRenewed;
 	
 }

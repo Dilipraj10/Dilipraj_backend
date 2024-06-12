@@ -43,8 +43,8 @@ public class Utils {
 //				.email(dto.getEmail())
 				.dueDate(dto.getDueDate())
 				.returnDate(dto.getReturnDate())
-				.isReturned(dto.isReturned())
-				.isRenewed(dto.isRenewed())
+				.isReturned(dto.getIsReturned())
+				.isRenewed(dto.getIsRenewed())
 				.build();
 	}
 

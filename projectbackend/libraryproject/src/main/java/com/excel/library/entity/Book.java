@@ -49,9 +49,9 @@ public class Book {
 
 	private LocalDate addedDate;
 
-	private int totalCopies;
+	private Integer totalCopies;
 
-	private int availableCopies;
+	private Integer availableCopies;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "book")
 	private List<BookHistory> histories;

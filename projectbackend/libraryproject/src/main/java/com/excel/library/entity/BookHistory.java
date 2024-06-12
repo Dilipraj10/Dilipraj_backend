@@ -37,9 +37,9 @@ public class BookHistory {
 	
 	private LocalDate returnDate;
 	
-	private boolean isReturned;
+	private Boolean isReturned;
 	
-	private boolean isRenewed;
+	private Boolean isRenewed;
 	
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "user_id")

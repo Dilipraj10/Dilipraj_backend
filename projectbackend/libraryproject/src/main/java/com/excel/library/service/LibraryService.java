@@ -7,7 +7,6 @@ import com.excel.library.dto.BookDto;
 import com.excel.library.dto.BookHistoryDto;
 import com.excel.library.dto.FeedbackDto;
 import com.excel.library.dto.UserDto;
-import com.excel.library.entity.Admin;
 import com.excel.library.enums.Genres;
 
 public interface LibraryService {
@@ -23,8 +22,6 @@ public interface LibraryService {
 	public List<BookDto> getAllBooks(String bookId, String bookName, String author, Genres genre);
 
 	public BookDto getBookById(BookDto dto);
-
-	public BookHistoryDto getTransactionById(BookHistoryDto dto);
 
 	public void deletUserByID(UserDto dto);
 
@@ -44,11 +41,15 @@ public interface LibraryService {
 
 	public String forgotPassword(UserDto dto);
 
-	public List<BookHistoryDto> getAllHistory(Integer historyId);
+	public List<BookHistoryDto> getAllHistory(Integer historyId, String email, String bookId);
 
 	public List<FeedbackDto> getAllFeedback();
 
 	public Integer updateTransaction(BookHistoryDto dto);
+
+	public String incrementAvailableBook(BookDto dto);
+
+	public String decrementAvailableBook(BookDto dto);
 
 
 

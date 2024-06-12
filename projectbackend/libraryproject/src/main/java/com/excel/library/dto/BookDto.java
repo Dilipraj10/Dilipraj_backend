@@ -26,6 +26,6 @@ public class BookDto {
 	private Genres genres;
 	private String description;
 	private LocalDate addedDate;
-	private int totalCopies;
-	private int availableCopies;
+	private Integer totalCopies;
+	private Integer availableCopies;
 }
