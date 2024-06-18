@@ -21,8 +21,6 @@ public interface LibraryService {
 
 	public List<BookDto> getAllBooks(String bookId, String bookName, String author, Genres genre);
 
-	public BookDto getBookById(BookDto dto);
-
 	public void deletUserByID(UserDto dto);
 
 	public void deletBookByID(BookDto dto);

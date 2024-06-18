@@ -46,7 +46,7 @@ public class LibraryServiceImp implements LibraryService {
 	@Autowired
 	private AdminRepo adminRepository;
 
-//------------------------------------------------------------------------------------------	
+//Adding the user------------------------------------------------------------------------------------------	
 	@Override
 	public String saveUser(UserDto dto) {
 		if (!userRepository.findByEmail(dto.getEmail()).isPresent()) {
@@ -57,10 +57,10 @@ public class LibraryServiceImp implements LibraryService {
 				return "password mismatch!";
 			}
 		}
-		return "User already present";
+		throw new UserNotFoundException("User already present");
 	}
 
-//------------------------------------------------------------------------------------------	
+//Adding books------------------------------------------------------------------------------------------	
 	@Override
 	public String saveBook(BookDto dto) {
 		if (!bookRepository.findByBookId(dto.getBookId()).isPresent()) {
@@ -71,7 +71,7 @@ public class LibraryServiceImp implements LibraryService {
 		throw new UserNotFoundException("Book already present");
 	}
 
-//-------------------------------------------------------------------------------------------	
+//Adding transactions-------------------------------------------------------------------------------------------	
 	@Override
 	public String saveTransactionHistories(BookHistoryDto dto) {
 
@@ -110,11 +110,25 @@ public class LibraryServiceImp implements LibraryService {
 				return userRepository.save(userEntity).getUsername();
 			}
 		}
+		
+		else if(optional.isPresent()) {
+			BookHistory history = optional.get();
+			if(history.getIsReturned() == true) {
+				history.setDueDate(dto.getDueDate());
+				history.setIsRenewed(dto.getIsRenewed());
+				history.setIsReturned(dto.getIsReturned());
+				history.setIssuedDate(dto.getIssuedDate());
+				history.setReturnDate(dto.getReturnDate());
+				
+				return bookHistoryRepo.save(history).getUser().getUsername();
+			}
+			
+		}
 
 		throw new UserNotFoundException("User already taken a book");
 	}
 
-//---------------------------------------------------------------------------------------------------	
+//Fetching users---------------------------------------------------------------------------------------------------	
 	@Override
 	public List<UserDto> getAllUser(Integer userId, String name, String email) {
 		try {
@@ -137,7 +151,7 @@ public class LibraryServiceImp implements LibraryService {
 		}
 	}
 
-//-------------------------------------------------------------------------------------------	
+//Fetching books-------------------------------------------------------------------------------------------	
 	@Override
 	public List<BookDto> getAllBooks(String bookId, String bookName, String author, Genres genre) {
 		try {
@@ -165,21 +179,8 @@ public class LibraryServiceImp implements LibraryService {
 		}
 	}
 
-//-------------------------------------------------------------------------------------------	
-	@Override
-	public BookDto getBookById(BookDto dto) {
-		Optional<Book> optional = bookRepository.findByBookId(dto.getBookId());
-		if (optional.isPresent()) {
-			Book book = optional.get();
-			return BookDto.builder().bookId(book.getBookId()).bookUrl(book.getBookUrl()).bookName(book.getBookName())
-					.bookAuthor(book.getBookAuthor()).genres(book.getGenres()).description(book.getDescription())
-					.addedDate(book.getAddedDate()).totalCopies(book.getTotalCopies())
-					.availableCopies(book.getAvailableCopies()).build();
-		}
-		throw new UserNotFoundException("No books to show");
-	}
 
-//-------------------------------------------------------------------------------------------	
+//Fetching the transactions-------------------------------------------------------------------------------------------	
 
 	@Override
 	public List<BookHistoryDto> getAllHistory(Integer historyId, String email, String bookId) {
@@ -209,7 +210,7 @@ public class LibraryServiceImp implements LibraryService {
 		}
 	}
 
-//-------------------------------------------------------------------------------------------	
+//Deleting the user-------------------------------------------------------------------------------------------	
 
 	@Override
 	public void deletUserByID(UserDto dto) {
@@ -221,7 +222,7 @@ public class LibraryServiceImp implements LibraryService {
 		}
 	}
 
-//-------------------------------------------------------------------------------------------	
+//Deleting the book-------------------------------------------------------------------------------------------	
 
 	@Override
 	public void deletBookByID(BookDto dto) {
@@ -234,7 +235,7 @@ public class LibraryServiceImp implements LibraryService {
 		}
 	}
 
-//-------------------------------------------------------------------------------------------	
+//Updating the user-------------------------------------------------------------------------------------------	
 
 	@Override
 	public String upadateUserByEmail(UserDto dto) {
@@ -251,7 +252,7 @@ public class LibraryServiceImp implements LibraryService {
 		throw new UserNotFoundException("No user to update");
 	}
 
-//-------------------------------------------------------------------------------------------	
+//Updating the book-------------------------------------------------------------------------------------------	
 
 	@Override
 	public String upadateBookById(BookDto dto) {
@@ -272,7 +273,7 @@ public class LibraryServiceImp implements LibraryService {
 		throw new UserNotFoundException("No book to update");
 	}
 
-//-------------------------------------------------------------------------------------------	
+//Adding the Feedback-------------------------------------------------------------------------------------------	
 
 	@Override
 	public String postFeedback(FeedbackDto dto) {
@@ -280,14 +281,14 @@ public class LibraryServiceImp implements LibraryService {
 		return feedbackRepository.save(feedback).getName();
 	}
 
-//------------------------------------------------------------------------------------------------	
+//Adding admin------------------------------------------------------------------------------------------------	
 
 	public String postAdmin(AdminDto dto) {
 		Admin admin = Utils.adminDtoToEntity(dto);
 		return adminRepository.save(admin).getAdminId();
 	}
 
-//--------------------------------------------------------------------------------------------------
+//Admin login--------------------------------------------------------------------------------------------------
 
 	public String adminLogin(AdminDto dto) {
 		Optional<Admin> optional = adminRepository.findByAdminId(dto.getAdminId());
@@ -302,7 +303,7 @@ public class LibraryServiceImp implements LibraryService {
 		throw new UserNotFoundException("Invalid Username!");
 	}
 
-//------------------------------------------------------------------------------------	
+//User login------------------------------------------------------------------------------------	
 	@Override
 	public UserDto userLogin(UserDto dto) {
 		Optional<User> optional = userRepository.findByEmail(dto.getEmail());
@@ -317,7 +318,7 @@ public class LibraryServiceImp implements LibraryService {
 		throw new UserNotFoundException("Invalid Email!");
 	}
 
-//------------------------------------------------------------------------------------	
+//Forgot password------------------------------------------------------------------------------------	
 	@Override
 	public String forgotPassword(UserDto dto) {
 		Optional<User> optional = userRepository.findByEmail(dto.getEmail());
@@ -330,7 +331,7 @@ public class LibraryServiceImp implements LibraryService {
 		throw new UserNotFoundException("Invalid Email!");
 	}
 
-//------------------------------------------------------------------------------------	
+//Fetch all the feedbacks------------------------------------------------------------------------------------	
 
 	@Override
 	public List<FeedbackDto> getAllFeedback() {
@@ -339,7 +340,7 @@ public class LibraryServiceImp implements LibraryService {
 				.toList();
 	}
 
-//-------------------------------------------------------------------------------------------------	
+//Update transaction-------------------------------------------------------------------------------------------------	
 	@Override
 	public Integer updateTransaction(BookHistoryDto dto) {
 		Optional<BookHistory> option = bookHistoryRepo.findByBookBookIdAndUserEmail(dto.getBookId(), dto.getEmail());
@@ -357,7 +358,7 @@ public class LibraryServiceImp implements LibraryService {
 		}
 	}
 
-//-------------------------------------------------------------------------------------------------	
+//Incrementing the available books count-------------------------------------------------------------------------------------------------	
 
 	@Override
 	public String incrementAvailableBook(BookDto dto) {
@@ -374,7 +375,7 @@ public class LibraryServiceImp implements LibraryService {
 		return null;
 	}
 
-//-------------------------------------------------------------------------------------------------	
+//Decrementing available book count-------------------------------------------------------------------------------------------------	
 
 	@Override
 	public String decrementAvailableBook(BookDto dto) {
@@ -390,6 +391,7 @@ public class LibraryServiceImp implements LibraryService {
 		}
 		return null;
 	}
+
 
 //------------------------------------------------------------------------------------------------------	
 

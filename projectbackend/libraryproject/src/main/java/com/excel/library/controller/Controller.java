@@ -32,7 +32,7 @@ public class Controller {
 	@Autowired
 	private LibraryService libraryService;
 
-//-------------------------------------------------------------------------------------------	
+//Adding user-------------------------------------------------------------------------------------------	
 	@PostMapping(path = "/auser")
 	public ResponseEntity<SuccessResponse<String>> postSaveUser(@RequestBody UserDto dto) {
 		String user = libraryService.saveUser(dto);
@@ -47,7 +47,7 @@ public class Controller {
 				.body(SuccessResponse.<String>builder().data(user).message("Registerd Sucessfully").build());
 	}
 
-//-------------------------------------------------------------------------------------------
+//Adding book-------------------------------------------------------------------------------------------
 
 	@PostMapping(path = "/abook")
 	public ResponseEntity<SuccessResponse<String>> postSaveBook(@RequestBody BookDto dto) {
@@ -56,7 +56,7 @@ public class Controller {
 				.body(SuccessResponse.<String>builder().data(userId).message("Book added").build());
 	}
 
-//-------------------------------------------------------------------------------------------	
+//Adding transaction-------------------------------------------------------------------------------------------	
 	@PostMapping(path = "/atransaction")
 	public ResponseEntity<SuccessResponse<String>> saveTransactionHistories(@RequestBody BookHistoryDto dto) {
 		String userId = libraryService.saveTransactionHistories(dto);
@@ -64,7 +64,7 @@ public class Controller {
 				.body(SuccessResponse.<String>builder().data(userId).message("transaction added").build());
 	}
 
-//-------------------------------------------------------------------------------------------	
+//Fetching users-------------------------------------------------------------------------------------------	
 	@GetMapping(path = "/alluser")
 	public ResponseEntity<SuccessResponse<List<UserDto>>> getAllUser(
 			@RequestParam(name = "userId", required = false) Integer userId,
@@ -75,7 +75,7 @@ public class Controller {
 				.isError(false).message("All users are fetched").build());
 	}
 
-//-------------------------------------------------------------------------------------------	
+//Fetching books-------------------------------------------------------------------------------------------	
 	@GetMapping(path = "/allbook")
 	public ResponseEntity<SuccessResponse<List<BookDto>>> getAllBooks(
 			@RequestParam(name = "bookId", required = false) String bookId,
@@ -87,7 +87,7 @@ public class Controller {
 				.isError(false).message("All Books are fetched").build());
 	}
 
-//-------------------------------------------------------------------------------------------	
+//Fetching transactions-------------------------------------------------------------------------------------------	
 	@GetMapping(path ="/alltransaction")
 	public ResponseEntity<SuccessResponse<List<BookHistoryDto>>> getAllTransaction(
 			@RequestParam(name = "historyId",required = false) Integer historyId, 
@@ -102,13 +102,13 @@ public class Controller {
 						.build());
 	}
 
-//-------------------------------------------------------------------------------------------	
+//Deleting user-------------------------------------------------------------------------------------------	
 	@DeleteMapping(path = "/deleteuserbyid")
 	public ResponseEntity<String> deletUserByID(@RequestBody UserDto dto) {
 		libraryService.deletUserByID(dto);
 		return ResponseEntity.status(HttpStatus.OK).body("User deleted");
 	}
-//-------------------------------------------------------------------------------------------	
+//Deleting book-------------------------------------------------------------------------------------------	
 
 	@DeleteMapping(path = "/deletebookbyid")
 	public ResponseEntity<String> deletBookByID(@RequestBody BookDto dto) {
@@ -116,7 +116,7 @@ public class Controller {
 		return ResponseEntity.status(HttpStatus.OK).body("Book deleted");
 	}
 
-//-------------------------------------------------------------------------------------------	
+//Updating user-------------------------------------------------------------------------------------------	
 	@PutMapping(path = "/updateuserbyid")
 	public ResponseEntity<SuccessResponse<String>> upadateUserByEmail(@RequestBody UserDto dto) {
 		String updatedUser = libraryService.upadateUserByEmail(dto);
@@ -124,7 +124,7 @@ public class Controller {
 				.body(SuccessResponse.<String>builder().data(updatedUser).message("User Updated").build());
 	}
 
-//-------------------------------------------------------------------------------------------	
+//Updating book-------------------------------------------------------------------------------------------	
 	@PutMapping(path = "/updatebookbyid")
 	public ResponseEntity<SuccessResponse<String>> upadateBookById(@RequestBody BookDto dto) {
 		String updatedBook = libraryService.upadateBookById(dto);
@@ -132,7 +132,7 @@ public class Controller {
 				.body(SuccessResponse.<String>builder().data(updatedBook).message("Book Updated").build());
 	}
 
-//------------------------------------------------------------------------------------	
+//Updating transactions------------------------------------------------------------------------------------	
 
 	@PutMapping(path = "/updatetransaction")
 	public ResponseEntity<SuccessResponse<Integer>> upadateTransaction(@RequestBody BookHistoryDto dto) {
@@ -141,7 +141,7 @@ public class Controller {
 				.body(SuccessResponse.<Integer>builder().data(update).message("transaction updated").build());
 	}
 
-//-------------------------------------------------------------------------------------------	
+//Adding feedback-------------------------------------------------------------------------------------------	
 	@PostMapping(path = "/postfeedback")
 	ResponseEntity<SuccessResponse<String>> postFeedback(@RequestBody FeedbackDto dto) {
 		String feedback = libraryService.postFeedback(dto);
@@ -149,7 +149,7 @@ public class Controller {
 				.body(SuccessResponse.<String>builder().data(feedback).message("feedback added").build());
 	}
 
-//-------------------------------------------------------------------------------------------	
+//Adding admin-------------------------------------------------------------------------------------------	
 	@PostMapping(path = "/postadmin")
 	public ResponseEntity<SuccessResponse<String>> postAdmin(@RequestBody AdminDto dto) {
 		String admin = libraryService.postAdmin(dto);
@@ -157,7 +157,7 @@ public class Controller {
 				.body(SuccessResponse.<String>builder().data(admin).message("admin added").build());
 	}
 
-//-------------------------------------------------------------------------------------------	
+//Admin login-------------------------------------------------------------------------------------------	
 	@PostMapping("/adminlogin")
 	ResponseEntity<SuccessResponse<String>> adminLogin(@RequestBody AdminDto dto) {
 		String admin = libraryService.adminLogin(dto);
@@ -165,7 +165,7 @@ public class Controller {
 				.body(SuccessResponse.<String>builder().data(admin).message("Admin Logined Successfully!").build());
 	}
 
-//-------------------------------------------------------------------------------------------------	
+//User login-------------------------------------------------------------------------------------------------	
 
 	@PostMapping(path = "/userlogin")
 	public ResponseEntity<SuccessResponse<UserDto>> userLogin(@RequestBody UserDto dto) {
@@ -173,7 +173,7 @@ public class Controller {
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body(SuccessResponse.<UserDto>builder().data(user)
 				.isError(false).message("User Login Successfully!").build());
 	}
-//-------------------------------------------------------------------------------------------	
+//Forgot password-------------------------------------------------------------------------------------------	
 
 	@PostMapping(path = "/forgotpassword")
 	public ResponseEntity<SuccessResponse<String>> forgotPassword(@RequestBody UserDto dto) {
@@ -182,7 +182,7 @@ public class Controller {
 				SuccessResponse.<String>builder().data(update).isError(false).message("Password Updated").build());
 	}
 
-//------------------------------------------------------------------------------------   
+//Fetching feedbacks------------------------------------------------------------------------------------   
 
 	@GetMapping("getallFeedback")
 	public ResponseEntity<SuccessResponse<List<FeedbackDto>>> getallFeedback() {
@@ -192,7 +192,7 @@ public class Controller {
 
 	}
 
-//-----------------------------------------------------------------------------------------------------------------------------   
+//Incrementing available books-----------------------------------------------------------------------------------------------------------------------------   
 
 	@PutMapping(path ="available/book/increement")
 	public ResponseEntity<SuccessResponse<String>> increementAvaialable(@RequestBody BookDto dto) {
@@ -204,7 +204,7 @@ public class Controller {
 						.build());
 	}
 	
-//--------------------------------------------------------------------------------------------------	
+//Decrement available books--------------------------------------------------------------------------------------------------	
 
 	@PutMapping(path = "available/book/decrement")
 	public ResponseEntity<SuccessResponse<String>> decrementAvailable(@RequestBody BookDto dto) {
