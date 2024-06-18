@@ -383,11 +383,14 @@ public class LibraryServiceImp implements LibraryService {
 		if (optional.isPresent()) {
 			Book book = optional.get();
 			Integer count = book.getAvailableCopies();
-			Integer available = count - 1;
-
-			book.setAvailableCopies(available);
-			
-			return bookRepository.save(book).getBookId();			
+			 if (count > 0) {
+		            Integer available = count - 1;
+		            book.setAvailableCopies(available);
+		            bookRepository.save(book);
+		            return book.getBookId();
+		        } else {
+		            throw new IllegalStateException("No available copies to decrement.");
+		        }		
 		}
 		return null;
 	}
