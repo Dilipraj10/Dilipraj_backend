@@ -10,7 +10,4 @@ public interface BookHistoryRepo extends JpaRepository<BookHistory, Integer> {
     Optional<BookHistory> findByHistoryId(Integer historyId);
     
 	Optional<BookHistory> findByBookBookIdAndUserEmail(String bookId, String email);
-
-	
-	
 }

@@ -49,6 +49,4 @@ public interface LibraryService {
 
 	public String decrementAvailableBook(BookDto dto);
 
-
-
 }
