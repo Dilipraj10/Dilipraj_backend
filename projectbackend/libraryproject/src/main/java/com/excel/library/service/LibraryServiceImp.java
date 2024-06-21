@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.excel.library.dto.AdminDto;
@@ -45,13 +46,32 @@ public class LibraryServiceImp implements LibraryService {
 
 	@Autowired
 	private AdminRepo adminRepository;
+	
+	@Autowired
+	private PasswordEncoder encoder;
 
 //Adding the user------------------------------------------------------------------------------------------	
+
+//	@Override
+//	public String saveUser(UserDto dto) {
+//		if (!userRepository.findByEmail(dto.getEmail()).isPresent()) {
+//			if (dto.getPassword().equals(dto.getConfirmPassword())) {
+//				User user = Utils.userDtoToEntity(dto);
+//				return userRepository.save(user).getUsername();
+//			} else {
+//				return "password mismatch!";
+//			}
+//		}
+//		throw new UserNotFoundException("User already present");
+//	}
+	
 	@Override
 	public String saveUser(UserDto dto) {
 		if (!userRepository.findByEmail(dto.getEmail()).isPresent()) {
 			if (dto.getPassword().equals(dto.getConfirmPassword())) {
-				User user = Utils.userDtoToEntity(dto);
+				String password = encoder.encode(dto.getPassword());
+				String confirmPassword = encoder.encode(dto.getConfirmPassword());
+				User user = Utils.userDtoToEntity(dto,password,confirmPassword);
 				return userRepository.save(user).getUsername();
 			} else {
 				return "password mismatch!";
@@ -304,20 +324,36 @@ public class LibraryServiceImp implements LibraryService {
 	}
 
 //User login------------------------------------------------------------------------------------	
+
+//	@Override
+//	public UserDto userLogin(UserDto dto) {
+//		Optional<User> optional = userRepository.findByEmail(dto.getEmail());
+//		if (optional.isPresent()) {
+//			User user = optional.get();
+//			if (user.getEmail().equals(dto.getEmail()) && user.getPassword().equals(dto.getPassword())) {
+//				return Utils.userLogin(user.getUsername(), user.getEmail());
+//			} else {
+//				throw new UserNotFoundException("Invalid Password!");
+//			}
+//		}
+//		throw new UserNotFoundException("Invalid Email!");
+//	}
+
+	
 	@Override
 	public UserDto userLogin(UserDto dto) {
-		Optional<User> optional = userRepository.findByEmail(dto.getEmail());
-		if (optional.isPresent()) {
-			User user = optional.get();
-			if (user.getEmail().equals(dto.getEmail()) && user.getPassword().equals(dto.getPassword())) {
-				return Utils.userLogin(user.getUsername(), user.getEmail());
-			} else {
-				throw new UserNotFoundException("Invalid Password!");
-			}
-		}
-		throw new UserNotFoundException("Invalid Email!");
+	    Optional<User> optional = userRepository.findByEmail(dto.getEmail());
+	    if (optional.isPresent()) {
+	        User user = optional.get();
+	        if (encoder.matches(dto.getPassword(), user.getPassword())) {
+	            return Utils.userLogin(user.getUsername(), user.getEmail());
+	        } else {
+	            throw new UserNotFoundException("Invalid Password!");
+	        }
+	    }
+	    throw new UserNotFoundException("Invalid Email!");
 	}
-
+	
 //Forgot password------------------------------------------------------------------------------------	
 	@Override
 	public String forgotPassword(UserDto dto) {
@@ -341,6 +377,7 @@ public class LibraryServiceImp implements LibraryService {
 	}
 
 //Update transaction-------------------------------------------------------------------------------------------------	
+	
 	@Override
 	public Integer updateTransaction(BookHistoryDto dto) {
 		Optional<BookHistory> option = bookHistoryRepo.findByBookBookIdAndUserEmail(dto.getBookId(), dto.getEmail());

@@ -1,5 +1,8 @@
 package com.excel.library.utils;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import com.excel.library.dto.AdminDto;
 import com.excel.library.dto.BookDto;
 import com.excel.library.dto.BookHistoryDto;
@@ -13,17 +16,25 @@ import com.excel.library.entity.User;
 
 public class Utils {
 
-
-
-	public static User userDtoToEntity(UserDto dto) {
+	public static User userDtoToEntity(UserDto dto, String password, String confirmPassword) {
 		return User.builder()
 				.username(dto.getUsername())
 				.phoneNo(dto.getPhoneNo()).email(dto.getEmail())
 				.gender(dto.getGender()).address(dto.getAddress())
-				.password(dto.getPassword())
-				.confirmPassword(dto.getConfirmPassword())
+				.password(password)
+				.confirmPassword(confirmPassword)
 				.build();
 	}
+	
+//	public static User userDtoToEntity(UserDto dto) {
+//		return User.builder()
+//				.username(dto.getUsername())
+//				.phoneNo(dto.getPhoneNo()).email(dto.getEmail())
+//				.gender(dto.getGender()).address(dto.getAddress())
+//				.password(dto.getPassword())
+//				.confirmPassword(dto.getConfirmPassword())
+//				.build();
+//	}
 
 	public static Book bookDtoToEntity(BookDto dto) {
 		return Book.builder()
